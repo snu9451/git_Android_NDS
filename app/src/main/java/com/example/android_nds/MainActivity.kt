@@ -30,8 +30,17 @@ class MainActivity : AppCompatActivity() {
         // DB에 메세지 쓰기
         val database = Firebase.database("https://androidnds-9ac2f-default-rtdb.asia-southeast1.firebasedatabase.app/")
         Log.i(TAG,"$database")
-        val myRef = database.getReference("message")
+//        val myRef = database.getReference("message")
+        val myRef = database.getReference() // base위치를 가리킴(base위치까지 진입하게 됨): androidnds-9ac2f-default-rtdb
         Log.i(TAG,"$myRef")
-        myRef.setValue("local")
+//        Log.i(TAG,"$myRef")
+//        myRef.setValue("local")
+        val myChild = myRef.child("first")
+        val myChild2 = myRef.child("first/second")
+        Log.i(TAG,"$myChild")
+        Log.i(TAG,"$myChild2")
+        Log.i(TAG, "${myChild.get()}")
+//        myRef.setValue("local") // 최상단의(base의) ref에다가 대고 setValue 해버리면 아래 자식들 다 사라지고 값만 세팅됨...
+
     }
 }
