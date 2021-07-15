@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction() // 이 자체가 [객체 생성]이라고 볼 수 있다.
             .apply {
                 replace(R.id.fragmentContainer, fragment) // fragmentContainer는 사전에 activity_main.xml에 준비해둔다.
-                commit() 
+                commit()
             }
     }
     override fun onBackPressed() {
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            super.onBackPressed()    
         }
     }
 
