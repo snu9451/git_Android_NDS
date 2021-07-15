@@ -7,10 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    // 지도 선언
+    private lateinit var mMap: GoogleMap
 
     companion object {
         private const val TAG = "MyMainActivityNDS"
@@ -23,9 +32,15 @@ class MainActivity : AppCompatActivity() {
         // https://androidnds-9ac2f-default-rtdb.asia-southeast1.firebasedatabase.app/
 //        writeToFB()
 
+
+
+
         // 프래그먼트의 초기화
         val reqErrandFragment = ReqErrandFragment()
-        val mapFragment = MapFragment()
+        // 지도 설정
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         // Navigation Menu를 클릭시 프래그먼트 교체 또는 액티비티 이동하기 처리
         val navMenu = findViewById<NavigationView>(R.id.nav_view)
@@ -88,10 +103,22 @@ class MainActivity : AppCompatActivity() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()    
+            super.onBackPressed()
         }
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        // Add a marker in Sydney and move the camera
+        val sydney = LatLng(37.478665, 126.878204)
+        mMap.addMarker(
+            MarkerOptions()
+            .position(sydney)
+            .title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        mMap.setMinZoomPreference(15.0f)
+    }
 
 
 }
