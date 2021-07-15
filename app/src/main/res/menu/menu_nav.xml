@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group>
+    <item android:title="심부름">
+        <menu>
+            <item android:id="@+id/nav_errandMap"
+                android:title="심부름 지도" />
+            <item android:id="@+id/nav_errandReq"
+                android:title="요청중인 심부름" />
+            <item android:id="@+id/nav_errandIng"
+                android:title="진행중인 심부름" />
+        </menu>
+    </item>
+    </group>
+    <group>
+    <item android:title="중고거래">
+        <menu>
+            <item android:id="@+id/nav_byLike"
+                android:title="인기 상품순" />
+            <item android:id="@+id/nav_byRecent"
+                android:title="최근 상품순" />
+            <item android:id="@+id/nav_byAge"
+                android:title="연령별" />
+            <item android:id="@+id/nav_byCategory"
+                android:title="카테고리별" />
+        </menu>
+    </item>
+    </group>
+    <group>
+    <item android:title="마이페이지">
+        <menu>
+            <item android:id="@+id/nav_myPage"
+                android:title="내 정보" />
+            <item android:id="@+id/nav_myWallet"
+                android:title="내 지갑 | 코인 충전" />
+            <item android:id="@+id/nav_myLike"
+                android:title="찜한 내역" />
+            <item android:id="@+id/nav_myErrand"
+                android:title="심부름 내역" />
+            <item android:id="@+id/nav_myItem"
+                android:title="중고거래 내역" />
+        </menu>
+    </item>
+    </group>
+</menu>
