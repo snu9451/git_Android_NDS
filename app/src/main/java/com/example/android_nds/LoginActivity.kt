@@ -13,6 +13,9 @@ class LoginActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        
+
     }
 
     // 회원가입 버튼 눌렀을 때의 이벤트
