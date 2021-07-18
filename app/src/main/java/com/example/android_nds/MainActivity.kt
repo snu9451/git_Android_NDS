@@ -25,10 +25,10 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity() {
 
-    // 지도 선언
-    private lateinit var mMap: GoogleMap
+//    // 지도 선언
+//    private lateinit var mMap: GoogleMap
 
     private val MY_PERMISSIONS_REQUEST_LOCATION: Int = 1001 // location 권한에 고유번호를 부여하는 작업 즉, 1001번 권한은 location권한을 의미.
 
@@ -44,9 +44,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // 프래그먼트의 초기화
         val reqErrandFragment = ReqErrandFragment()
         // 지도 설정
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        val mapFragment = MapFragment()
+        replaceFragment(mapFragment)
+//        val mapFragment = supportFragmentManager
+//            .findFragmentById(R.id.map) as SupportMapFragment
+//        mapMapFragment.getMapAsync(this)
 
         // Navigation Menu를 클릭시 프래그먼트 교체 또는 액티비티 이동하기 처리
         val navMenu = findViewById<NavigationView>(R.id.nav_view)
@@ -159,19 +161,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    // 지도가 준비되었을 때 - 콜백메소드
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(37.478665, 126.878204)
-        mMap.addMarker(
-            MarkerOptions()
-            .position(sydney)
-            .title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        mMap.setMinZoomPreference(15.0f)
-    }
+//    // 지도가 준비되었을 때 - 콜백메소드
+//    override fun onMapReady(googleMap: GoogleMap) {
+//        mMap = googleMap
+//
+//        // Add a marker in Sydney and move the camera
+//        val sydney = LatLng(37.478665, 126.878204)
+//        mMap.addMarker(
+//            MarkerOptions()
+//            .position(sydney)
+//            .title("Marker in Sydney"))
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+//        mMap.setMinZoomPreference(15.0f)
+//    }
 
     companion object {
         private const val TAG = "MyMainActivityNDS"
