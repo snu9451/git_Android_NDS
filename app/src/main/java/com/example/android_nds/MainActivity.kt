@@ -2,6 +2,7 @@ package com.example.android_nds
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,12 +27,15 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
-//    // 지도 선언
-//    private lateinit var mMap: GoogleMap
-
+    // 지도 선언
+    private lateinit var mMap: GoogleMap
+    // 현재 위치를 담는다
+    private lateinit var currentLoc: Location
     private val MY_PERMISSIONS_REQUEST_LOCATION: Int = 1001 // location 권한에 고유번호를 부여하는 작업 즉, 1001번 권한은 location권한을 의미.
+
+    private var currentFragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +43,18 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG,"여기여기")
         // https://androidnds-9ac2f-default-rtdb.asia-southeast1.firebasedatabase.app/
 
-        requestLocPermission()
-        getLocation()
+
 
         // 프래그먼트의 초기화
         val reqErrandFragment = ReqErrandFragment()
+        val allListItemActivity = AllListItemActivity()
+//        val ndsMapFragment = NDSMapFragment()
         // 지도 설정
-        val mapFragment = MapFragment()
-        replaceFragment(mapFragment)
+        val mapMapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 //        val mapFragment = supportFragmentManager
 //            .findFragmentById(R.id.map) as SupportMapFragment
-//        mapMapFragment.getMapAsync(this)
-
+        mapMapFragment.getMapAsync(this)
+//        replaceFragment(mapMapFragment)
         // Navigation Menu를 클릭시 프래그먼트 교체 또는 액티비티 이동하기 처리
         val navMenu = findViewById<NavigationView>(R.id.nav_view)
         navMenu.setNavigationItemSelectedListener {
@@ -60,18 +65,39 @@ class MainActivity : AppCompatActivity() {
                 // 요청중인 심부름 메뉴 클릭 시
                 R.id.nav_errandReq -> {
                     Log.i(TAG,"[요청중인 심부름] 클릭하였음")
-                    replaceFragment(reqErrandFragment)
+                    // 현재 프래그먼트가 요청중인 심부름 프래그 먼트가 아닐때만 바꿔주세요
+                    if(currentFragment != reqErrandFragment) replaceFragment(reqErrandFragment)
                 }
                 // 심부름 지도 메뉴 클릭 시
                 R.id.nav_errandMap -> {
                     Log.i(TAG,"[심부름 지도] 클릭하였음")
-                    replaceFragment(mapFragment)
+                    // 테스트
+//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(37.478768, 126.878879)))
+                    // 현재 위치 갱신하기
+                    getLocation()
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
+                    plusMarker(mMap, currentLoc)
+//                    mMap.
+//                    replaceFragment(ndsMapFragment)
+//                    replaceFragment(mapMapFragment)
+                    if(currentFragment != null) removeFragment()
+//                    Log.i(TAG,"프래그먼트 제거 완료")
+//
+//                    replaceFragment()
+                }
+                // 중고거래 목록 보기 메뉴 클릭 시
+                R.id.all_item_list -> {
+                    Log.i(TAG,"[중고거래 목록 보기] 클릭하였음")
+                    val intent = Intent(this, AllListItemActivity::class.java)
+                    startActivity(intent)
                 }
             }
             val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
             drawer.closeDrawer(GravityCompat.START)
             true
         }
+        requestLocPermission()
+        getLocation()
     }
 
     // 위치접근 권한 요청하기
@@ -139,6 +165,8 @@ class MainActivity : AppCompatActivity() {
                 applicationContext, currentLocation.latitude.toString() + "," +
                         currentLocation.longitude, Toast.LENGTH_LONG
             ).show()
+            currentLoc = location
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
         }
     }
 
@@ -146,7 +174,19 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment : Fragment) {
         supportFragmentManager.beginTransaction() // 이 자체가 [객체 생성]이라고 볼 수 있다.
             .apply {
-                replace(R.id.fragmentContainer, fragment) // fragmentContainer는 사전에 activity_main.xml에 준비해둔다.
+                add(R.id.fragmentContainer, fragment) // fragmentContainer는 사전에 activity_main.xml에 준비해둔다.
+//                replace(R.id.willbereplaced, fragment)
+                currentFragment = fragment // 현재 화면에 띄워질 프래그먼트 담기
+                Log.i(TAG, "$currentFragment 를 붙여요")
+                commit()
+            }
+    }
+    private fun removeFragment() {
+        supportFragmentManager.beginTransaction() // 이 자체가 [객체 생성]이라고 볼 수 있다.
+            .apply {
+                Log.i(TAG, "$currentFragment 를 뗍니다~~~")
+                currentFragment?.let { remove(it) } // fragmentContainer는 사전에 activity_main.xml에 준비해둔다.
+                currentFragment = null
                 commit()
             }
     }
@@ -161,22 +201,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    // 지도가 준비되었을 때 - 콜백메소드
-//    override fun onMapReady(googleMap: GoogleMap) {
-//        mMap = googleMap
-//
-//        // Add a marker in Sydney and move the camera
-//        val sydney = LatLng(37.478665, 126.878204)
-//        mMap.addMarker(
-//            MarkerOptions()
-//            .position(sydney)
-//            .title("Marker in Sydney"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-//        mMap.setMinZoomPreference(15.0f)
-//    }
+    // 지도가 준비되었을 때 - 콜백메소드
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        // Add a marker in Sydney and move the camera
+        val currentLocLatLng = LatLng(37.478665, 126.878204)
+//        val currentLocLatLng = LatLng(currentLoc.latitude, currentLoc.longitude)
+        mMap.addMarker(
+            MarkerOptions()
+            .position(currentLocLatLng))
+        mMap.setMinZoomPreference(15.0f)
+    }
+    
+    private fun plusMarker(googleMap: GoogleMap, currentLog: Location){
+        // addMarker는 Marker를 return한다.
+        googleMap.addMarker(
+            MarkerOptions()
+                .position(LatLng(currentLoc.latitude, currentLoc.longitude))
+                .title("나의 위치")
+        )
+    }
 
     companion object {
-        private const val TAG = "MyMainActivityNDS"
+        private const val TAG = "mymymy"
     }
 
 }

@@ -7,22 +7,14 @@
                 android:title="심부름 지도" />
             <item android:id="@+id/nav_errandReq"
                 android:title="요청중인 심부름" />
-            <item android:id="@+id/nav_errandIng"
-                android:title="진행중인 심부름" />
         </menu>
     </item>
     </group>
     <group>
     <item android:title="중고거래">
         <menu>
-            <item android:id="@+id/nav_byLike"
-                android:title="인기 상품순" />
-            <item android:id="@+id/nav_byRecent"
-                android:title="최근 상품순" />
-            <item android:id="@+id/nav_byAge"
-                android:title="연령별" />
-            <item android:id="@+id/nav_byCategory"
-                android:title="카테고리별" />
+            <item android:id="@+id/all_item_list"
+                android:title="중고거래 상품 보기" />
         </menu>
     </item>
     </group>

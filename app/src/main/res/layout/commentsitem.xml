@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/commentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/commentNickname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="10dp"
+        android:textSize="14dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        tools:text="사과"
+        />
+    <TextView
+        android:id="@+id/commentDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentNickname"
+        android:layout_marginEnd="10dp"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:textColor="@color/gray"
+        tools:text="2020-06-18 17:46:41"
+        />
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/commentDate"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
+        android:textSize="17dp"
+        tools:text="오 너무 예쁜데요??"
+        />
+    <Button
+        android:id="@+id/commentDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/commentDate"
+        android:background="#00ff0000"
+        android:textSize="10dp"
+        android:textColor="@color/gray"
+        android:text="댓글 삭제" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+<!--
+    {
+    "COMMENT_STEP": 4,
+    "MEM_NICKNAME": "수박",
+    "COMMENT_DATE": "2020-06-18 17:46:41",
+    "COMMENT_MSG": "용량은 얼마나 돼나요?",
+    "COMMENT_ME": 0,
+    "COMMENT_POS": 0,
+    "COMMENT_GROUP": 2
+    }
+    -->

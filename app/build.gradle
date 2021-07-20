@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
     id 'com.google.gms.google-services'  // Google Services plugin
 }
 
@@ -34,9 +35,23 @@ android {
     buildFeatures{
         viewBinding = true
     }
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
+    // 진현주
+
+    // 이지혜
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    implementation 'androidx.room:room-runtime:2.2.6'
+    kapt 'androidx.room:room-compiler:2.2.6'
+    // 김은영
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:28.2.0')
