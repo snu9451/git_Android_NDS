@@ -2,7 +2,9 @@ package com.example.android_nds
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -94,6 +96,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     val intent = Intent(this, AllListItemActivity::class.java)
                     startActivity(intent)
                 }
+                // 로그아웃 클릭 시
+                R.id.nav_logout -> {
+                    Log.i(TAG,"로그아웃 클릭하였음")
+                    logout()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                }
             }
             val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
             drawer.closeDrawer(GravityCompat.START)
@@ -103,6 +112,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         getLocation()
     }
 
+    // 로그아웃 버튼 클릭 시
+    fun logout(){
+        Log.i(TAG,"logout 메소드 호출 성공")
+        val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        // ============================================ 출력해보기 시작
+        Log.i(TAG,"MainActivity::isSavedId? ${sharedPreferences.getString("savedId", "false")}")
+        Log.i(TAG,"MainActivity::isAutoLogin? ${sharedPreferences.getString("autoLogin", "false")}")
+        Log.i(TAG,"MainActivity::memEmail? ${sharedPreferences.getString("mem_email", "")}")
+        Log.i(TAG,"MainActivity::memPw? ${sharedPreferences.getString("mem_pw", "")}")
+        // ============================================ 출력해보기 끝
+        // 자동 로그인은 해제함
+        editor.remove("autoLogin")
+        // 아이디 저장 회원이 아닌 경우와 아이디 저장 회원인 경우를 나눠서 처리
+        val isSavedId: String = sharedPreferences.getString("savedId", "false").toString()
+        if(isSavedId == null || "false".equals(isSavedId)) editor.remove("mem_email")
+        editor.remove("mem_pw")
+        editor.commit() // 커밋 꼭 해줘야 함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }
+    
+    
+    
     // 위치접근 권한 요청하기
     private fun requestLocPermission(){
         var locPermission: Int = ActivityCompat.checkSelfPermission(

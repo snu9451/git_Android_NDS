@@ -9,8 +9,6 @@
                     android:title="심부름 지도" />
                 <item android:id="@+id/nav_errandReq"
                     android:title="요청중인 심부름" />
-                <item android:id="@+id/nav_errandIng"
-                    android:title="진행중인 심부름" />
             </menu>
         </item>
     </group>
@@ -38,4 +36,6 @@
             </menu>
         </item>
     </group>
+    <item android:id="@+id/nav_logout"
+        android:title="로그아웃"/>
 </menu>
