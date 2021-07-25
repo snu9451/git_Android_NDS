@@ -2,27 +2,47 @@ package com.example.android_nds
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.android_nds.api.MemberService
+import com.example.android_nds.interceptor.LoginHandleInterceptor
+import com.example.android_nds.model.Items
+import com.example.android_nds.model.MemberVO
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.gms.tasks.Task
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.lang.reflect.Member
 
 
 class LoginActivity : AppCompatActivity() {
 
     val TAG: String = "mymymy"
+    private lateinit var memberService: MemberService
+
 //    private val MY_PERMISSIONS_REQUEST_LOCATION: Int = 1001 // location 권한에 고유번호를 부여하는 작업 즉, 1001번 권한은 location권한을 의미.
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,8 +128,65 @@ class LoginActivity : AppCompatActivity() {
     // 로그인 버튼 눌렀을 때의 이벤트
     fun login(view: View) {
         Log.i(TAG, "[로그인] 버튼 클릭 완료 - 액티비티 전환")
-        // 회원 아이디와 비번 비교하는 작업 - inser_here
-        var intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        // 회원 아이디와 비번 비교하는 작업 - insert_here
+        // SharedPreferences에 사용자가 입력한 id 와 pw를 넣기
+        val memEmail: String = findViewById<EditText>(R.id.et_id).text.toString()
+        val memPw: String = findViewById<EditText>(R.id.et_pw).text.toString()
+        Log.i(TAG, "입력된 아이디: $memEmail")
+        Log.i(TAG, "입력된 비밀번호: $memPw")
+        val sharedPreferences: SharedPreferences = applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString("mem_email", memEmail)
+        editor.putString("mem_pw", memPw)
+        editor.commit()
+
+//        // 클라이언트 객체 생성 후 인터셉터 설정하기
+//        val client = OkHttpClient()
+//        Log.i(TAG, "${client.interceptors()}")
+//        client.interceptors()[0] = LoginHandleInterceptor(applicationContext)
+//            Log.i(TAG, "${client.interceptors()[0]}")
+////            .add(0, LoginHandleInterceptor(applicationContext))
+
+//        val gson: Gson = GsonBuilder().setLenient().create()
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(LoginHandleInterceptor(applicationContext)).build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(getString(R.string.ip_num))
+            .client(okHttpClient)
+//            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+        memberService = retrofit.create(MemberService::class.java)
+//        val member = MemberVO(memEmail, memPw)
+//        memberService.selectIsMember(member)
+        memberService.selectIsMember(memEmail, memPw)
+            .enqueue(object: Callback<String> {
+            //api 요청 성공시
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if(response.isSuccessful.not()){
+                    Log.e(TAG,"Not Success!!")
+                    return
+                }
+                // 결과 출력
+                Log.i(TAG, response.body().toString())
+                // 로그인 결과가 성공인 경우
+                if("login success".equals(response.body().toString())){
+                    Log.i(TAG,"로그인 성공, 메인액티비티로 이동합니다.")
+                    var intent = Intent(applicationContext, MainActivity::class.java)
+                    startActivity(intent)
+                }
+                // 로그인 결과가 실패인 경우
+                else {
+                    Toast.makeText(applicationContext, "로그인 실패 ㅠ.ㅠ", Toast.LENGTH_SHORT).show()
+                }
+            }
+            //api 요청 실패시
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e(TAG,t.toString())
+            }
+
+        })
     }
 }

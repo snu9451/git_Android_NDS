@@ -74,9 +74,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     // 테스트
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(37.478768, 126.878879)))
                     // 현재 위치 갱신하기
-                    getLocation()
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
-                    plusMarker(mMap, currentLoc)
+                    // map이 생성되지 않았다면, map부터 생성해주기
+                    if(mMap != null){
+                        getLocation()
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
+                        plusMarker(mMap, currentLoc)
+                    }
 //                    mMap.
 //                    replaceFragment(ndsMapFragment)
 //                    replaceFragment(mapMapFragment)
