@@ -16,17 +16,19 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -39,17 +41,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var currentFragment: Fragment? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.i(TAG,"여기여기")
         // https://androidnds-9ac2f-default-rtdb.asia-southeast1.firebasedatabase.app/
-
-
-
+        requestLocPermission()
+        getLocation()
         // 프래그먼트의 초기화
         val reqErrandFragment = ReqErrandFragment()
-        val allListItemActivity = AllListItemActivity()
+//        val allListItemActivity = AllListItemActivity()
 //        val ndsMapFragment = NDSMapFragment()
         // 지도 설정
         val mapMapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -77,11 +80,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //                    mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(37.478768, 126.878879)))
                     // 현재 위치 갱신하기
                     // map이 생성되지 않았다면, map부터 생성해주기
-                    if(mMap != null){
-                        getLocation()
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
-                        plusMarker(mMap, currentLoc)
-                    }
+//                    if(mMap != null){
+//                        getLocation()
+//                        mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
+//                        plusMarker(mMap, currentLoc)
+//                    }
+                    moveToCurrentPosition()
 //                    mMap.
 //                    replaceFragment(ndsMapFragment)
 //                    replaceFragment(mapMapFragment)
@@ -108,8 +112,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             drawer.closeDrawer(GravityCompat.START)
             true
         }
-        requestLocPermission()
-        getLocation()
+
     }
 
     // 로그아웃 버튼 클릭 시
@@ -131,8 +134,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         editor.remove("mem_pw")
         editor.commit() // 커밋 꼭 해줘야 함!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
-    
-    
+
+    @SuppressLint("MissingPermission")  // 이 부분이 없으면 isMyLocationEnabled 쪽이 오류남
+    // 현재위치로 지도 중심 이동시키기
+    private fun moveToCurrentPosition(){
+        if(mMap != null){
+            mMap.isMyLocationEnabled = true
+            getLocation()
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(LatLng(currentLoc.latitude, currentLoc.longitude)))
+        }
+    }
     
     // 위치접근 권한 요청하기
     private fun requestLocPermission(){
@@ -173,6 +184,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     Toast.makeText(this, "위치 접근 권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+                    getLocation()
+
                 } else {
                     Toast.makeText(this, "위치 접근 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -190,6 +203,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     /* 위치가져오기 */
     @SuppressLint("MissingPermission")
     private fun getLocation() {
+        Log.i(TAG, "getLocation 메소드 호출 성공")
         val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         val task: Task<Location> = fusedLocationClient.lastLocation
         lateinit var currentLocation: Location
@@ -236,25 +250,64 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     // 지도가 준비되었을 때 - 콜백메소드
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
+        Log.i(TAG, "onMapReady 메소드 호출 성공")
         mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
-        val currentLocLatLng = LatLng(37.478665, 126.878204)
+        mMap.isMyLocationEnabled = true
+        // 임의로 상수값 넣어두기. 화면이 모두 구성되면(onViewCreated) 위치 이동시킴.
+//        val currentLocLatLng = LatLng(37.478665, 126.878204)
 //        val currentLocLatLng = LatLng(currentLoc.latitude, currentLoc.longitude)
-        mMap.addMarker(
-            MarkerOptions()
-            .position(currentLocLatLng))
+//        mMap.addMarker(
+//            MarkerOptions()
+//            .position(currentLocLatLng))
         mMap.setMinZoomPreference(15.0f)
+
+        /*
+        TEST
+        */
+        val ndsFirebaseSync = NDSFirebaseSync()
+        ndsFirebaseSync.initFirebase()
+        Timer().scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                Log.i(TAG, "0.3초마다 실행")
+                if(ndsFirebaseSync.allErrandMap.isNotEmpty()){
+                    ndsFirebaseSync.allErrandMap.keys.forEach {
+                        val errrandLat = ndsFirebaseSync.allErrandMap[it]?.get("errand_lat")
+                        val errrandLng = ndsFirebaseSync.allErrandMap[it]?.get("errand_lng")
+                        Log.i(TAG, "$errrandLat")
+                        Log.i(TAG, "$errrandLng")
+                        this@MainActivity.runOnUiThread(Runnable {
+//                            mMap.addPolyline(PolylineOptions().add(latLng))
+//                            mMap.animateCamera(
+//                                CameraUpdateFactory.newCameraPosition(
+//                                    CameraPosition.Builder().target(latLng)
+//                                        .zoom(13f).build()
+//                                )
+//                            )
+                            mMap.addMarker(
+                                MarkerOptions().position(LatLng(errrandLat?.toDouble()!!, errrandLng?.toDouble()!!))
+                            )
+                        })
+
+                    }
+                    cancel()
+                    return
+                }
+            }
+        }, 0, 300)
+
     }
-    
-    private fun plusMarker(googleMap: GoogleMap, currentLog: Location){
+
+    private fun plusMarker(){
         // addMarker는 Marker를 return한다.
-        googleMap.addMarker(
-            MarkerOptions()
-                .position(LatLng(currentLoc.latitude, currentLoc.longitude))
-                .title("나의 위치")
-        )
+        if(mMap != null && currentLoc != null){
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(LatLng(currentLoc.latitude, currentLoc.longitude))
+                    .title("나의 위치")
+            )
+        }
     }
 
     companion object {
