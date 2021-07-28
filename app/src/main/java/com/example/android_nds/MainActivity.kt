@@ -6,32 +6,24 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -45,17 +37,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     var currentFragment: Fragment? = null
 
     // 마커를 담을 자료구조 맵 선언
-//    private lateinit var markerContainer: Map<String, Any>
+    private lateinit var markerContainer: Map<String, Any>
 
     // 심부름 정보창 프래그먼트 선언
     private lateinit var oneErrandFragment:OneErrandFragment
 
+    private var backBtnTime: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val intent = Intent(this, LoadingActivity::class.java)
+        startActivity(intent)
         Log.i(TAG,"여기여기")
         // https://androidnds-9ac2f-default-rtdb.asia-southeast1.firebasedatabase.app/
         requestLocPermission()
+
         getLocation()
         // 프래그먼트의 초기화
         val reqErrandFragment = ReqErrandFragment()
@@ -125,6 +122,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
 
     }
+    
+    // 현재위치버튼 설정하기
+    private fun setCurrentPositionButton(){
+        Log.i(TAG, "setCurrentPositionButton() 메소드 호출 성공!")
+        // 권한체크 및 현재위치로 이동을 위한 버튼 생성
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+            requestLocPermission()
+            return
+        }
+        mMap.isMyLocationEnabled = true
+    }
+
 
     // 로그아웃 버튼 클릭 시
     fun logout(){
@@ -254,6 +266,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     //  뒤로가기 버튼을 눌렀을 때
     override fun onBackPressed() {
         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
+
+        val curTime = System.currentTimeMillis()
+        val gapTime: Long = curTime - backBtnTime
+
+        Log.i(TAG, "currentFragment: $currentFragment")
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         }
@@ -261,9 +278,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         else if (currentFragment == oneErrandFragment) {
             removeFragment()
         }
+        else if(currentFragment == null) {  // 두번 연속 뒤로가기 누르면 로그아웃됨을 알리기
+            Toast.makeText(this, "한번 더 누르면 로그아웃됩니다.", Toast.LENGTH_SHORT).show()
+            backBtnTime = curTime
+            if(gapTime in 0..2000) super.onBackPressed()
+        }
         else {
             super.onBackPressed()
         }
+
 
     }
 
@@ -275,10 +298,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         requestLocPermission()
         mMap.apply {
             this.setMinZoomPreference(15.0f)
+//            this.setMinZoomPreference(8.0f)
             this.setOnMarkerClickListener(this@MainActivity)
         }
-
-
+        setCurrentPositionButton()
+        markerContainer = HashMap()
         /*
         TEST
         */
@@ -297,15 +321,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         Log.i(TAG, "$errrandLng")
                         this@MainActivity.runOnUiThread(Runnable {
                             // ==================== [[ 요청중인 심부름 마커 추가하기 시작 ]] ====================
-                            mMap.addMarker(
+                            val marker: Marker = mMap.addMarker(
                                 MarkerOptions().apply {
                                     this.position(LatLng(errrandLat?.toDouble()!!, errrandLng?.toDouble()!!))
                                     this.zIndex(10.0f)
                                     this.title(errandKey)
+//                                    this.icon(BitmapDescriptorFactory.fromBitmap(Bitmap.createBitmap(()))
                                 }
                             )
+                            // NDS -> REQ 전환 시 마커들을 삭제하기 위해 맵에 담아줌.
+                            markerContainer.toMutableMap().set(errandKey, marker)
+                            //TEST
+                            Log.i(TAG, "zcvzcvzxcvzxcvzx$markerContainer")
                         })
-
                     }
                     oneErrandFragment.setNdsFirebaseSync(ndsFirebaseSync)
                     Log.i(TAG, "ndsFirebaseSync============= $ndsFirebaseSync")
@@ -318,8 +346,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }, 0, 300)
 
 
-        //TEST
-//        Log.i(TAG, "zcvzcvzxcvzxcvzx$markerContainer")
+
 
     }
 

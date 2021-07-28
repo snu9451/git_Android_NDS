@@ -1,6 +1,5 @@
 package com.example.android_nds
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -62,15 +61,16 @@ class OneErrandFragment : Fragment() {
             val errandErrandPrice = view.findViewById<TextView>(R.id.one_errand_errand_price)
             val errandTotalPrice = view.findViewById<TextView>(R.id.one_errand_total_price)
             val errandJuso = view.findViewById<TextView>(R.id.one_errand_position)
-            val errandLat = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_lat")
-            val errandLng = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_lng")
-            var errandKorJuso = "$errandLat, $errandLng"
+//            val errandLat = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_lat")
+//            val errandLng = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_lng")
+//            var errandKorJuso = "$errandLat, $errandLng"
+            var errandKorJuso = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("juso")
             errandItem?.text = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_item")
             errandContent?.text = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_content")
             errandItemPrice?.text = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_item_price_req")
             errandErrandPrice?.text = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_price")
             errandTotalPrice?.text = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("errand_total_price")
-            errandJuso?.text = errandKorJuso
+            errandJuso.text = errandKorJuso
         }
         return view
     }

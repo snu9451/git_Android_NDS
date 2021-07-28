@@ -55,6 +55,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val intent = Intent(this, OpenLoadingActivity::class.java)
+        startActivity(intent)
+
         // 로그인 화면을 열기 전, 자동 로그인 회원인지를 먼저 확인한다.
         // SharedPreferences울 가져와 값 담기 - 최신화
         sharedPreferences = applicationContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)

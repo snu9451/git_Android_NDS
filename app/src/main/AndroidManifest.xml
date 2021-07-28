@@ -13,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Android_NDS"
         android:usesCleartextTraffic="true">
+        <activity android:name=".LoadingActivity"></activity>
+        <activity android:name=".OpenLoadingActivity"></activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <activity
             android:name=".ChatActivity"
             android:windowSoftInputMode="adjustResize" />

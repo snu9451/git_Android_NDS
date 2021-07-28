@@ -6,27 +6,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ChatActivity"
     android:background="@color/ndsblue_light">
-        <EditText
-            android:id="@+id/et_chat"
-            android:drawableLeft="@drawable/ic_baseline_add_box_24"
+       <include android:id="@+id/includedToolbar"
+           layout="@layout/toolbar_main"/>
+<!--        <EditText-->
+<!--            android:id="@+id/et_chat"-->
+<!--            android:drawableLeft="@drawable/ic_baseline_add_box_24"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:background="@color/white"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/rv_chatList"-->
+<!--            android:hint="이곳에 채팅내용을 입력하세요." />-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rv_chatList"-->
+<!--            android:scrollbarStyle="outsideInset"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:background="@color/white"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toTopOf="parent"-->
+<!--            tools:listitem="@layout/listitem_chat"/>-->
+        <WebView
+            android:id="@+id/webView"
             android:layout_width="match_parent"
-            android:layout_margin="10dp"
-            android:layout_height="40dp"
-            android:background="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_chatList"
-            android:hint="이곳에 채팅내용을 입력하세요." />
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_chatList"
-            android:scrollbarStyle="outsideInset"
-            android:layout_width="match_parent"
-            android:layout_margin="10dp"
-            android:layout_height="100dp"
-            android:background="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="parent"
-            tools:listitem="@layout/listitem_chat"/>
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/includedToolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 </androidx.constraintlayout.widget.ConstraintLayout>
