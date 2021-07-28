@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Android_NDS</string>
     <!-- 페이지 ip주소 -->
-    <string name="ip_num">http://192.168.0.22:9696</string>
+    <string name="ip_num">http://123.142.144.46:9696</string>
     <!-- 아이템 이미지 경로 -->
-    <string name="img_where">http://192.168.0.22:9696/itemPage/assets/img/board_Img/</string>
+    <string name="img_where">http://123.142.144.46:9696/itemPage/assets/img/board_Img/</string>
 
 
     <string name="hello_blank_fragment">내용없음</string>

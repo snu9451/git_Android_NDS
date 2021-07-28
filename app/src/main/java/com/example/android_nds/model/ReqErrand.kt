@@ -1,7 +1,7 @@
 package com.example.android_nds.model
 
 import android.util.Log
-
+// DEPRECATED
 class ReqErrand {
     constructor(){
         Log.i("mymymy", "ReqErrand 생성자 호출 완료")
@@ -13,6 +13,8 @@ class ReqErrand {
         errand_item_price_req: String,
         errand_lat: Double,
         errand_lng: Double,
+//        errand_lat: String,
+//        errand_lng: String,
         errand_price: String,
         errand_total_price: Int,
         errand_request_date: String,
@@ -40,6 +42,8 @@ class ReqErrand {
     var errand_item_price_req: String = ""
     var errand_lat: Double = 0.0
     var errand_lng: Double = 0.0
+//    var errand_lat: String = ""
+//    var errand_lng: String = ""
     var errand_price: String = ""
     var errand_total_price: Int = 0
     var errand_request_date: String = ""

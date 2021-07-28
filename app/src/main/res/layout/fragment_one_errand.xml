@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/ndsyellow_light"
+    tools:context=".OneErrandFragment">
+
+    <TextView
+        android:id="@+id/one_errand_item"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="80dp"
+        android:text="심부름 아이템" />
+    <TextView
+        android:id="@+id/one_errand_content"
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:background="@drawable/btn_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_item"
+        android:layout_marginTop="10dp"
+        android:text="심부름 내용입니다~~~~~~~~~~~~ DSFS~~ASDF SDFSD FADSFadsfasdfasdfasdfasdfasdfasdfasdfasdf SADASDasdfasdfasdfsd" />
+    <TextView
+        android:id="@+id/one_errand_position"
+        android:drawableLeft="@drawable/ic_baseline_location_on_24"
+        android:drawableTint="@color/white"
+        android:textSize="15sp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@color/ndsyellow_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_content"
+        android:layout_marginTop="10dp"
+        android:text="심부름 위치" />
+    <TextView
+        android:id="@+id/one_errand_item_price"
+        android:drawableLeft="@drawable/ic_baseline_shopping_cart_24"
+        android:textSize="15sp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@color/ndsyellow_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_position"
+        android:layout_marginTop="10dp"
+        android:text="심부름 물건 가격" />
+    <TextView
+        android:id="@+id/one_errand_errand_price"
+        android:drawableLeft="@drawable/ic_baseline_bike_scooter_24"
+        android:textSize="15sp"
+        android:layout_width="300dp"
+        android:background="@color/ndsyellow_dark"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_item_price"
+        android:layout_marginTop="10dp"
+        android:text="심부름 가격" />
+    <TextView
+        android:id="@+id/one_errand_total_price"
+        android:drawableLeft="@drawable/ic_baseline_arrow_forward_24"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:background="@color/ndsyellow_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_errand_price"
+        android:layout_marginTop="10dp"
+        android:text="심부름 총 가격" />
+
+    <Button
+        android:id="@+id/one_errand_chat"
+        android:text="심부름 하기 [채팅방으로 연결]"
+        android:background="@drawable/btn_dblue"
+        android:textColor="@color/white"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:onClick="onChatClick"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_total_price"/>
+    <Button
+        android:id="@+id/one_errand_back"
+        android:text="닫기"
+        android:background="@drawable/btn_white"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/one_errand_chat"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

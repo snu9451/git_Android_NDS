@@ -6,32 +6,35 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.tasks.Task
 import com.google.android.material.navigation.NavigationView
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     // 지도 선언
     private lateinit var mMap: GoogleMap
@@ -39,9 +42,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var currentLoc: Location
     private val MY_PERMISSIONS_REQUEST_LOCATION: Int = 1001 // location 권한에 고유번호를 부여하는 작업 즉, 1001번 권한은 location권한을 의미.
 
-    private var currentFragment: Fragment? = null
+    var currentFragment: Fragment? = null
 
+    // 마커를 담을 자료구조 맵 선언
+//    private lateinit var markerContainer: Map<String, Any>
 
+    // 심부름 정보창 프래그먼트 선언
+    private lateinit var oneErrandFragment:OneErrandFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +66,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 //        val mapFragment = supportFragmentManager
 //            .findFragmentById(R.id.map) as SupportMapFragment
         mapMapFragment.getMapAsync(this)
+
+        // 심부름 정보창 프래그먼트 생성
+        oneErrandFragment = OneErrandFragment()
+
 //        replaceFragment(mapMapFragment)
         // Navigation Menu를 클릭시 프래그먼트 교체 또는 액티비티 이동하기 처리
         val navMenu = findViewById<NavigationView>(R.id.nav_view)
@@ -185,6 +196,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     // contacts-related task you need to do.
                     Toast.makeText(this, "위치 접근 권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
                     getLocation()
+                    if(mMap != null) mMap.isMyLocationEnabled = true
 
                 } else {
                     Toast.makeText(this, "위치 접근 권한이 거부되었습니다.", Toast.LENGTH_SHORT).show()
@@ -244,9 +256,15 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
-        } else {
+        }
+        // 심부름 정보창(OneErrandFragment)이 열려있다면 닫기
+        else if (currentFragment == oneErrandFragment) {
+            removeFragment()
+        }
+        else {
             super.onBackPressed()
         }
+
     }
 
     // 지도가 준비되었을 때 - 콜백메소드
@@ -254,48 +272,54 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.i(TAG, "onMapReady 메소드 호출 성공")
         mMap = googleMap
-        mMap.isMyLocationEnabled = true
-        // 임의로 상수값 넣어두기. 화면이 모두 구성되면(onViewCreated) 위치 이동시킴.
-//        val currentLocLatLng = LatLng(37.478665, 126.878204)
-//        val currentLocLatLng = LatLng(currentLoc.latitude, currentLoc.longitude)
-//        mMap.addMarker(
-//            MarkerOptions()
-//            .position(currentLocLatLng))
-        mMap.setMinZoomPreference(15.0f)
+        requestLocPermission()
+        mMap.apply {
+            this.setMinZoomPreference(15.0f)
+            this.setOnMarkerClickListener(this@MainActivity)
+        }
+
 
         /*
         TEST
         */
         val ndsFirebaseSync = NDSFirebaseSync()
         ndsFirebaseSync.initFirebase()
+
         Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 Log.i(TAG, "0.3초마다 실행")
                 if(ndsFirebaseSync.allErrandMap.isNotEmpty()){
                     ndsFirebaseSync.allErrandMap.keys.forEach {
+                        val errandKey = ndsFirebaseSync.allErrandMap[it]?.get("errandKey").toString()
                         val errrandLat = ndsFirebaseSync.allErrandMap[it]?.get("errand_lat")
                         val errrandLng = ndsFirebaseSync.allErrandMap[it]?.get("errand_lng")
                         Log.i(TAG, "$errrandLat")
                         Log.i(TAG, "$errrandLng")
                         this@MainActivity.runOnUiThread(Runnable {
-//                            mMap.addPolyline(PolylineOptions().add(latLng))
-//                            mMap.animateCamera(
-//                                CameraUpdateFactory.newCameraPosition(
-//                                    CameraPosition.Builder().target(latLng)
-//                                        .zoom(13f).build()
-//                                )
-//                            )
+                            // ==================== [[ 요청중인 심부름 마커 추가하기 시작 ]] ====================
                             mMap.addMarker(
-                                MarkerOptions().position(LatLng(errrandLat?.toDouble()!!, errrandLng?.toDouble()!!))
+                                MarkerOptions().apply {
+                                    this.position(LatLng(errrandLat?.toDouble()!!, errrandLng?.toDouble()!!))
+                                    this.zIndex(10.0f)
+                                    this.title(errandKey)
+                                }
                             )
                         })
 
                     }
+                    oneErrandFragment.setNdsFirebaseSync(ndsFirebaseSync)
+                    Log.i(TAG, "ndsFirebaseSync============= $ndsFirebaseSync")
+                    Log.i(TAG, "ndsFirebaseSync============= ${ndsFirebaseSync.allErrandMap["-MeVaphhL3XJ3xvAM134"]}")
                     cancel()
                     return
                 }
             }
+
         }, 0, 300)
+
+
+        //TEST
+//        Log.i(TAG, "zcvzcvzxcvzxcvzx$markerContainer")
 
     }
 
@@ -314,4 +338,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         private const val TAG = "mymymy"
     }
 
+    override fun onMarkerClick(marker: Marker): Boolean {
+        Log.i(TAG, "클릭된 심부름의 키: ${marker.title}")
+        marker.hideInfoWindow()
+        val cameraUpdate:CameraUpdate = CameraUpdateFactory.newLatLng(marker.position)
+        mMap.animateCamera(cameraUpdate)    // 부드럽게 이동하도록 하기 위해서
+        /*
+            false를 반환하면 default 동작인 [부드러운 카메라 이동]을 지원받을 수 있지만 [infoWindow 띄우기]가 실행되기 때문에
+            true를 반환하고 카메라 이동은 직접 구현하였음.
+            ■ infoWindow를 띄우지 않는 이유: title 속성에 errandKey를 박았고 그 값을 노출시키고 싶지 않음.
+        */
+        oneErrandFragment.setErrandKey(marker.title)
+        if(currentFragment != oneErrandFragment) replaceFragment(oneErrandFragment)
+        currentFragment = oneErrandFragment
+        return true
+    }
 }

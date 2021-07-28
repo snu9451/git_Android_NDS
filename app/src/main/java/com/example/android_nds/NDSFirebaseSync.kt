@@ -34,18 +34,28 @@ class NDSFirebaseSync {
                 Log.i(ReqErrandFragment.TAG, "onChildAdded 호출 성공")
                 Log.i(ReqErrandFragment.TAG, "정보 ===> ${snapshot.child("errand").apply {
                     Log.i(ReqErrandFragment.TAG, "this.value: "+this.value.toString())
-                    if(this.value!=null) this.children.forEach{
+                    if(this.value!=null) this.children.forEach{ it ->
                         Log.i(TAG, "각 심부름의 key: "+it.key.toString())
                         Log.i(TAG, "ReqErrand에 담길 정보: "+it.value.toString())
                         // 파이어베이스의 데이터 정보를 준비해 둔 ReqErrand 객체에 매핑
-                        val reqErrandModel: ReqErrand? = it.getValue(ReqErrand::class.java)
-                        Log.i(TAG, "errand_lat: ${reqErrandModel?.errand_lat}")
-                        Log.i(TAG, "errand_lng: ${reqErrandModel?.errand_lng}")
+//                        val reqErrandModel: ReqErrand? = it.getValue(ReqErrand::class.java)
+//                        val reqErrandModel: Map<String, Object> = HashMap<String, Object>().toMutableMap()
                         errandLocationMap = HashMap()
-                        errandLocationMap["errand_lat"] =
-                            reqErrandModel?.errand_lat.toString()
-                        errandLocationMap["errand_lng"] =
-                            reqErrandModel?.errand_lng.toString()
+                        errandLocationMap["errandKey"] = it.key.toString()
+                        it.children.forEach { 
+//                            Log.i(TAG, "HERE!!!! ==> ${it.value}")
+//                            if("errand_lat" == it.key) Log.i(TAG, "errand_lat: ${it.value}")
+                            errandLocationMap[it.key.toString()] = it.value.toString()
+                        }
+//                        Log.i(TAG, "errand_lat: ${reqErrandModel["errand_lat"]}")
+//                        Log.i(TAG, "errand_lat: ${reqErrandModel["errand_lng"]}")
+//                        Log.i(TAG, "errand_lng: ${reqErrandModel?.errand_lng}")
+//                        errandLocationMap["errand_lat"] =
+//                            reqErrandModel?.errand_lat.toString()
+//                            reqErrandModel["errand_lat"].toString()
+//                        errandLocationMap["errand_lng"] =
+//                            reqErrandModel?.errand_lng.toString()
+//                            reqErrandModel["errand_lng"].toString()
                         allErrandMap[it.key.toString()] = errandLocationMap
                     }
                 }}")
