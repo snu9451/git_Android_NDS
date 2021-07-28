@@ -231,7 +231,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     // 프래그먼트를 갈아 끼우기
-    private fun replaceFragment(fragment : Fragment) {
+    fun replaceFragment(fragment : Fragment) {
         supportFragmentManager.beginTransaction() // 이 자체가 [객체 생성]이라고 볼 수 있다.
             .apply {
                 add(R.id.fragmentContainer, fragment) // fragmentContainer는 사전에 activity_main.xml에 준비해둔다.
@@ -241,7 +241,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 commit()
             }
     }
-    private fun removeFragment() {
+    fun removeFragment() {
         supportFragmentManager.beginTransaction() // 이 자체가 [객체 생성]이라고 볼 수 있다.
             .apply {
                 Log.i(TAG, "$currentFragment 를 뗍니다~~~")
@@ -352,5 +352,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         if(currentFragment != oneErrandFragment) replaceFragment(oneErrandFragment)
         currentFragment = oneErrandFragment
         return true
+    }
+
+
+    fun startChatActivity(){
+        val intent = Intent(this, ChatActivity::class.java)
+        startActivity(intent)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.android_nds
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -30,14 +31,27 @@ class OneErrandFragment : Fragment() {
         oneErrandBinding = FragmentOneErrandBinding.inflate(layoutInflater)
         val view = binding.root
 
-
+        // 닫기 버튼 클릭 시 이벤트 구현
         view.findViewById<Button>(R.id.one_errand_back).setOnClickListener {
-            Log.i(TAG," 닫기버튼 클릭!!")
+            Log.i(TAG,"닫기 버튼 클릭!!")
             val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
             fragmentManager.beginTransaction().remove(this@OneErrandFragment).commit()
             fragmentManager.popBackStack()
             (activity as MainActivity).currentFragment = null
         }
+
+        // 채팅하기 버튼 클릭 시 이벤트 구현
+        view.findViewById<Button>(R.id.one_errand_chat).setOnClickListener {
+            Log.i(TAG,"채팅하기 버튼 클릭!!")
+//            (activity as MainActivity).apply {
+//                this.removeFragment()
+//                this.currentFragment = ChatFragment()
+//                this.replaceFragment(this.currentFragment as ChatFragment)
+//            }
+            (activity as MainActivity).startChatActivity()
+        }
+
+
 
         // ndsFirebaseSync가 null이 아니라면 해당 키(errandKey)를 갖는 심부름 정보를 가져온다.
         if(ndsFirebaseSync!=null){
