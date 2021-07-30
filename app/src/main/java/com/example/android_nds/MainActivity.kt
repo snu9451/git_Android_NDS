@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val reqErrandFragment = ReqErrandFragment()
 //        val allListItemActivity = AllListItemActivity()
 //        val ndsMapFragment = NDSMapFragment()
+        val allListItemFragment = AllListItemFragment()
         // 지도 설정
         val mapMapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 //        val mapFragment = supportFragmentManager
@@ -105,8 +106,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 // 중고거래 목록 보기 메뉴 클릭 시
                 R.id.all_item_list -> {
                     Log.i(TAG,"[중고거래 목록 보기] 클릭하였음")
-                    val intent = Intent(this, AllListItemActivity::class.java)
-                    startActivity(intent)
+//                    val intent = Intent(this, AllListItemActivity::class.java)
+//                    startActivity(intent)
+                    // 현재 프래그먼트가 요청중인 심부름 프래그 먼트가 아닐때만 바꿔주세요
+                    if(currentFragment != allListItemFragment) replaceFragment(allListItemFragment)
                 }
                 // 로그아웃 클릭 시
                 R.id.nav_logout -> {

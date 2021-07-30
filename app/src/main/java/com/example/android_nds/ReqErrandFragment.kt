@@ -23,6 +23,7 @@ class ReqErrandFragment : Fragment(R.layout.fragment_reqerrand) {
     private var reqErrandBinding: FragmentReqerrandBinding? = null
     private lateinit var reqErrandAdapter: ReqErrandAdapter
     private lateinit var reqErrandList: ArrayList<ReqErrand>
+//    private lateinit var reqErrandList: ArrayList<Map<String, Any>>
 
     private val binding get()= reqErrandBinding!!   // 나는 null이 아니야!! 라는 의미에서 느낌표 두개
 
@@ -70,9 +71,18 @@ class ReqErrandFragment : Fragment(R.layout.fragment_reqerrand) {
                         reqErrandModel?.errandKey = it.key.toString()
                         if (reqErrandModel != null) {
                             reqErrandList.add(reqErrandModel)
-                            Log.i(TAG, "reqErrandList: ${reqErrandList}")
+                            Log.i(TAG, "reqErrandList: $reqErrandList")
                             reqErrandAdapter.submitList(reqErrandList)
                         }
+                        // 파이어베이스의 데이터 정보를 준비해 둔 Map 자료구조에 매핑
+//                        val reqErrandModel: ReqErrand? = it.getValue(ReqErrand::class.java)
+//                        // errandKey는 키라서 키로 값에 접근할 수 없는 듯하여 직접 대입해주었음
+//                        reqErrandModel?.errandKey = it.key.toString()
+//                        if (reqErrandModel != null) {
+//                            reqErrandList.add(reqErrandModel)
+//                            Log.i(TAG, "reqErrandList: $reqErrandList")
+//                            reqErrandAdapter.submitList(reqErrandList)
+//                        }
                         /*
                         Log.i(TAG, "reqErrandModel:"+reqErrandModel)
                         Log.i(TAG, "======================= [[ 전체출력해보기 시작 ]] =======================")
