@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val intent = Intent(this, LoadingActivity::class.java)
-        startActivity(intent)
+        if(!AllListItemFragment.isToFromInsertActivity) startActivity(intent)
         Log.i(TAG,"여기여기")
         // https://androidnds-9ac2f-default-rtdb.asia-southeast1.firebasedatabase.app/
         requestLocPermission()
@@ -123,6 +123,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             drawer.closeDrawer(GravityCompat.START)
             true
         }
+
+        if(AllListItemFragment.isToFromInsertActivity){
+            replaceFragment(allListItemFragment)
+            AllListItemFragment.isToFromInsertActivity = false
+        }
+
 
     }
     
@@ -247,6 +253,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     // 프래그먼트를 갈아 끼우기
     fun replaceFragment(fragment : Fragment) {
+        if(currentFragment!=null) removeFragment()
         supportFragmentManager.beginTransaction() // 이 자체가 [객체 생성]이라고 볼 수 있다.
             .apply {
                 add(R.id.fragmentContainer, fragment) // fragmentContainer는 사전에 activity_main.xml에 준비해둔다.
@@ -281,13 +288,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         else if (currentFragment == oneErrandFragment) {
             removeFragment()
         }
-        else if(currentFragment == null) {  // 두번 연속 뒤로가기 누르면 로그아웃됨을 알리기
+//        else if(currentFragment == null) {  // 두번 연속 뒤로가기 누르면 로그아웃됨을 알리기
+//        }
+        else {
             Toast.makeText(this, "한번 더 누르면 로그아웃됩니다.", Toast.LENGTH_SHORT).show()
             backBtnTime = curTime
             if(gapTime in 0..2000) super.onBackPressed()
-        }
-        else {
-            super.onBackPressed()
+//            super.onBackPressed()
         }
 
 
@@ -385,8 +392,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
 
-    fun startChatActivity(){
+    fun startChatActivity(destEmail: String){
         val intent = Intent(this, ChatActivity::class.java)
+        intent.putExtra("dest_email", destEmail)
+        startActivity(intent)
+    }
+
+    // 클릭 - Fragment Layout에 추가한 View이지만 클릭 이벤트를 구현할 메소드는 context Activity에 정의해야 한다.
+    // Fragment에 정의하면 찾지 못함.
+    fun floatClick(view: View){
+        Log.i(AllListItemFragment.TAG, "플로팅 버튼 클릭! - 상품등록 페이지로 전환됩니다.")
+        val intent = Intent(this, ItemInsertActivity::class.java)
         startActivity(intent)
     }
 }

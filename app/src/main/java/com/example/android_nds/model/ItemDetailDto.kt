@@ -3,6 +3,7 @@ package com.example.android_nds.model
 import com.google.gson.annotations.SerializedName
 
 data class ItemDetailDto (
+    @SerializedName("MEM_EMAIL") val mem_email: String,
     @SerializedName("BM_NO") val bm_no: Int,
     @SerializedName("BI_FILE") val bi_file: String,
     @SerializedName("BM_TITLE") val bm_title: String,

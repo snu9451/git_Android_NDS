@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/insertTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="상품 등록하기"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/insertItemTitleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="제목"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertTitle" />
+
+    <EditText
+        android:id="@+id/insertItemTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/edittext_rounded_corner_rectangle"
+        android:hint="  제목을 입력 해주세요.  "
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/insertItemPriceView"
+        app:layout_constraintStart_toEndOf="@+id/insertItemTitleView"
+        app:layout_constraintTop_toBottomOf="@+id/insertTitle"
+        app:layout_constraintVertical_bias="0.475" />
+
+    <TextView
+        android:id="@+id/insertItemPriceView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="가격"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemTitleView" />
+
+    <EditText
+        android:id="@+id/insertItemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/edittext_rounded_corner_rectangle"
+        android:hint="  가격을 입력 해주세요.  "
+        android:inputType="number"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/insertItemTextView"
+        app:layout_constraintStart_toEndOf="@+id/insertItemTitleView"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemTitleView" />
+
+    <TextView
+        android:id="@+id/insertItemCategoriView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:text="카테고리"
+        app:layout_constraintStart_toEndOf="@+id/insertItemPrice"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemTitleView" />
+
+    <Spinner
+        android:id="@+id/insertItemCategori"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/spinner_rectangle"
+        app:layout_constraintBottom_toTopOf="@+id/insertItemTextView"
+        app:layout_constraintStart_toEndOf="@+id/insertItemCategoriView"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemTitleView" />
+
+    <TextView
+        android:id="@+id/insertItemTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="내용"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemPriceView" />
+
+    <EditText
+        android:id="@+id/insertItemText"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/edittext_rounded_corner_rectangle"
+        android:hint="  내용을 입력 해주세요.  "
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/insertItemTitleView"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemPriceView" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/insertItemImg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/insertItemImgButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemText"
+        app:spanCount="2"
+        tools:itemCount="5" />
+
+    <Button
+        android:id="@+id/insertItemImgButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="사진 등록"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/insertItemButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemImg" />
+
+    <Button
+        android:id="@+id/insertItemButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="중고거래 물품 등록하기"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertItemImg" />
+</androidx.constraintlayout.widget.ConstraintLayout>

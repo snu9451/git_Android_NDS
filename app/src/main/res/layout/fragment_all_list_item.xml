@@ -19,19 +19,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <EditText
-                android:id="@+id/searchEditText"
-                android:layout_width="0dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:hint="찾고자 하는 상품명을 입력하세요."
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:lines="1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
             <!-- ListView는 전체를 그리므로 재사용성 없고 모든 데이터를 다 그려지므로 느려지거나 앱이 죽을 수도
              그러나 리사이클러뷰는 위에 2개 아래 2개 정도만 그려놓고 재사용하면서 처리해 줌-->
             <androidx.recyclerview.widget.RecyclerView
@@ -53,6 +40,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="0dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:hint="찾고자 하는 상품명을 입력하세요."
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:lines="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- backgroundTint로 버튼색 지정, app:tint으로 안에 add모양 색 지정 -->
@@ -99,5 +98,6 @@
         android:layout_margin="20dp"
         android:backgroundTint="@color/ndsblue_light"
         app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="floatClick"
         app:layout_constraintBottom_toTopOf="@id/bottom_navbar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

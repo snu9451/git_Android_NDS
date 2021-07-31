@@ -2,10 +2,23 @@
     <string name="app_name">Android_NDS</string>
     <!-- 페이지 ip주소 -->
     <!--    <string name="ip_num">http://123.142.144.46:9696</string>-->
-    <string name="ip_num">http://123.142.144.46:9696</string>
+    <string name="ip_num">http://115.91.81.108:9696</string>
     <!-- 아이템 이미지 경로 -->
-    <string name="img_where">http://123.142.144.46:9696/itemPage/assets/img/board_Img/</string>
-
+    <string name="img_where">http://115.91.81.108:9696/itemPage/assets/img/board_Img/</string>
+    <!--카테고리 스피너-->
+    <string-array name="insertItemCategori">
+        <item>카테고리</item>
+        <item>가구</item>
+        <item>도서</item>
+        <item>디지털기기</item>
+        <item>반려동물용품</item>
+        <item>스포츠</item>
+        <item>식물</item>
+        <item>유아동</item>
+        <item>의류</item>
+        <item>화장품</item>
+        <item>기타</item>
+    </string-array>
 
     <string name="hello_blank_fragment">내용없음</string>
 

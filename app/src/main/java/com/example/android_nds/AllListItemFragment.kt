@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.example.android_nds.adapter.HistoryAdapter
@@ -39,6 +40,9 @@ class AllListItemFragment : Fragment() {
     //태그
     companion object {
         const val TAG = "mymymy"
+
+        var isToFromInsertActivity = false
+
     }
 
     override fun onCreateView(
@@ -50,6 +54,12 @@ class AllListItemFragment : Fragment() {
         allListItembinding = FragmentAllListItemBinding.inflate(layoutInflater)
         Log.i(TAG, "allListItembinding: $allListItembinding")
         val view = binding.root
+
+//        ////글 올리기 버튼 클릭///
+//        binding.newItemInsertButton.setOnClickListener {
+//            val intent = Intent(activity?.applicationContext, ItemInsertActivity::class.java)
+//            startActivity(intent)
+//        }
 
         //아이템 전부 가져오는 리사이클러뷰
         initItemListRecyclerView()
@@ -74,10 +84,8 @@ class AllListItemFragment : Fragment() {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         //인터페이스인 itemService를 가져옴
         itemService = retrofit.create(ItemService::class.java)
-
         //아이템 목록 받아옴.
         itemListConnect("like_rank")
         return view
@@ -248,4 +256,15 @@ class AllListItemFragment : Fragment() {
 
             })
     }
+
+
+    override fun onResume() {
+        //새로고침 => 삭제나 아이템 추가시 - 프래그먼트가 allItemListFragment 일때만
+        super.onResume()
+        if((activity as MainActivity).currentFragment == this && isToFromInsertActivity){
+            Log.i(TAG, "삭제 또는 추가로 인해 갱신합니다!!!")
+            startActivity((activity as MainActivity).intent)
+        }
+    }
+
 }

@@ -68,7 +68,7 @@ class ChatActivity : AppCompatActivity() {
         val headerMap = HashMap<String, String>()
         headerMap["mem_email"] = memEmail
         Log.i(TAG, "$headerMap")
-        webView.loadUrl(getString(R.string.ip_num)+"/mainPage/chatroomList.jsp", headerMap)
+        webView.loadUrl(getString(R.string.ip_num)+"/mainPage/chatroom.jsp?dest_email="+intent.getStringExtra("dest_email"), headerMap)
 //        webView.loadUrl(getString(R.string.ip_num)+"/mainPage/main_page.nds", headerMap)
 
 

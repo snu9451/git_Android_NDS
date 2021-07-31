@@ -47,7 +47,9 @@ class OneErrandFragment : Fragment() {
 //                this.currentFragment = ChatFragment()
 //                this.replaceFragment(this.currentFragment as ChatFragment)
 //            }
-            (activity as MainActivity).startChatActivity()
+            var destEmail = ndsFirebaseSync?.allErrandMap?.get(errandKey)?.get("mem_email")
+            Log.i(TAG,"$destEmail")
+            (activity as MainActivity).startChatActivity(destEmail.toString())
         }
 
 
